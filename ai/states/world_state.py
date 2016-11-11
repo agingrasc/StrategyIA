@@ -5,6 +5,9 @@ from ai.states.debug_state import DebugState
 from ai.states.game_state import GameState
 from ai.states.play_state import PlayState
 from ai.states.module_state import ModuleState
+from RULEngine.Game.Team import Team
+from RULEngine.Util.Pose import Pose
+from RULEngine.Util.Position import Position
 
 
 class WorldState:
@@ -26,3 +29,17 @@ class WorldState:
 
     def set_team_color(self, p_our_team_color):
         self.game_state.set_team_color(p_our_team_color)
+
+
+class WorldStateFactory(object):
+
+    @staticmethod
+    def default_world_state():
+        world_state = WorldState(False)
+        game_state = GameState()
+        team = Team(False)
+        team.players[0].pose = Pose(Position(500, 500))
+        team.players[1].pose = Pose(Position(600, 600))
+        game_state.my_team = team
+        world_state.game_state = game_state
+        return world_state
