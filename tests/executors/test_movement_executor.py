@@ -71,6 +71,10 @@ class TestMovementExecutor(unittest.TestCase):
         self.assertEqual(expected_ai_command_one, ai_commands[1])
         self.assertNotEqual(old_aicmd, ai_commands)
 
-    @unittest.skip("todo")
+    @unittest.skip("todo: first collision is ignore because id is inferior, but not second")
     def test_exec_ai_command_multi_collisions_first_not_considered(self):
+        self.fail()
+
+    @unittest.skip("todo: 2 sequence clean old collisions after the fact")
+    def test_exec_two_time(self):
         self.fail()

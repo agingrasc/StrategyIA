@@ -14,11 +14,12 @@ class MovementExecutor(Executor):
         self.future_pose = {}
         self.collisions = {}
         self.ai_commands = []
-        for pid in range(PLAYER_PER_TEAM):
-            self.collisions[pid] = []
+        self._init_collisions()
 
     def exec(self):
         """ En cas de collision, le robot avec l'id inferieur s'arrete """
+        self.future_pose = {}
+        self._init_collisions()
         self._detect_collisions()
         self.ai_commands = self.ws.play_state.current_ai_commands
         for pid in self.collisions:
@@ -47,6 +48,10 @@ class MovementExecutor(Executor):
                 position = self.future_pose[pid].position
                 other_position = self.future_pose[other_pid].position
                 dist = get_distance(position, other_position)
-                if pid != other_pid and dist < ROBOT_RADIUS * 2:
+                if pid != other_pid and dist < ROBOT_RADIUS * 5:
                     self.collisions[pid].append((other_pid, other_position))
 
+    def _init_collisions(self):
+        self.collisions = {}
+        for pid in range(PLAYER_PER_TEAM):
+            self.collisions[pid] = []
