@@ -20,6 +20,7 @@ class GameState(object, metaclass=Singleton):
         self.other_team = RULEngine.Game.Team.Team(not is_team_yellow)
         self.timestamp = 0
         self.last_timestamp = 0
+        self.delta = 0
         self.debug_information_in = []
         self.ui_debug_commands = []
 
@@ -105,9 +106,9 @@ class GameState(object, metaclass=Singleton):
             :param player_pose: Nouvelle Pose à donner au joueur
         """
         if is_my_team:
-            self.my_team.move_and_rotate_player(player_id, player_pose)
+            self.my_team.update_player(player_id, player_pose, self.delta)
         else:
-            self.other_team.move_and_rotate_player(player_id, player_pose)
+            self.other_team.update_player(player_id, player_pose, self.delta)
 
     def _update_team(self, new_team_info, is_my_team=True):
         """
@@ -125,5 +126,6 @@ class GameState(object, metaclass=Singleton):
         """
         self.last_timestamp = self.timestamp
         self.timestamp = new_timestamp
+        self.delta = self.timestamp - self.last_timestamp
 
 
