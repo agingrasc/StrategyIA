@@ -1,9 +1,10 @@
 # Under MIT License, see LICENSE.txt
 
-from RULEngine.Util.Pose import Pose, Position
 from ai.Debug.ui_debug_command import UIDebugCommand
 from ai.executors.executor import Executor
 from ai.STA.Strategy.HumanControl import HumanControl
+from RULEngine.Util.Pose import Pose, Position
+from RULEngine.Util.constant import is_legal_field_pose
 import copy
 
 
@@ -66,7 +67,8 @@ class DebugExecutor(Executor):
         target = Pose(Position(target[0], target[1]))
         tactic = self.ws.play_state.get_new_tactic('Idle')(self.ws.game_state, player_id, target)
         try:
-            tactic = self.ws.play_state.get_new_tactic(tactic_name)(self.ws.game_state, player_id, target)
+            if is_legal_field_pose(target):
+                tactic = self.ws.play_state.get_new_tactic(tactic_name)(self.ws.game_state, player_id, target)
         except:
             print("La tactique n'a pas été appliquée par cause de mauvais arguments.")
 

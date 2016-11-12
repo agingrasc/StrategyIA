@@ -12,12 +12,11 @@ import random
 import math
 import copy
 import time
-import socket
-import pickle
 
 from RULEngine.Util.Pose import Pose
 from RULEngine.Util.Position import Position
-from RULEngine.Util.constant import POSITION_DEADZONE
+from RULEngine.Util.constant import LEGAL_X_LEFT, LEGAL_X_RIGHT,\
+                                    LEGAL_Y_BOTTOM, LEGAL_Y_TOP
 from ai.Algorithm.IntelligentModule import Pathfinder
 
 from ai.Debug.debug_interface import COLOR_ID_MAP, DEFAULT_PATH_TIMEOUT
@@ -108,7 +107,8 @@ class PathfinderRRT(Pathfinder):
                   goal=[target_position_of_player.x, target_position_of_player.y],
                   obstacleList=obstacleList,
                   # TODO Vérifier si le robot peut sortir du terrain
-                  rand_area=[-4500, 4500],
+                  rand_x_limit=[LEGAL_X_LEFT, LEGAL_X_RIGHT],
+                  rand_y_limit=[LEGAL_Y_BOTTOM, LEGAL_Y_TOP],
                   expand_dis=get_expand_dis([initial_position_of_main_player.x,
                                              initial_position_of_main_player.y],
                                             [target_position_of_player.x, target_position_of_player.y]),
@@ -140,7 +140,7 @@ class RRT():
     permettant de générer le path.
     """
 
-    def __init__(self, start, goal, obstacleList, rand_area, expand_dis, goal_sample_rate, max_iteration=50):
+    def __init__(self, start, goal, obstacleList, rand_x_limit, rand_y_limit, expand_dis, goal_sample_rate, max_iteration=50):
         """
         Setting Parameter
 
@@ -157,8 +157,10 @@ class RRT():
         """
         self.start = Node(start[0], start[1])
         self.end = Node(goal[0], goal[1])
-        self.minrand = rand_area[0]
-        self.maxrand = rand_area[1]
+        self.minrand_x = rand_x_limit[0]
+        self.maxrand_x = rand_x_limit[1]
+        self.minrand_y = rand_y_limit[0]
+        self.maxrand_y = rand_y_limit[1]
         self.expand_dis = expand_dis
         self.goal_sample_rate = goal_sample_rate
         self.max_iteration = max_iteration
@@ -172,7 +174,7 @@ class RRT():
             # Random Sampling
 
             if random.randint(0, 100) > self.goal_sample_rate:
-                random_coordinates = [random.uniform(self.minrand, self.maxrand), random.uniform(self.minrand, self.maxrand)]
+                random_coordinates = [random.uniform(self.minrand_x, self.maxrand_x), random.uniform(self.minrand_y, self.maxrand_y)]
             else:
                 random_coordinates = [self.end.x, self.end.y]
 
